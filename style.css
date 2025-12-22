@@ -117,9 +117,11 @@ p {
 
 .wishes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));  /* Slightly wider */
+  gap: 1.5rem;  /* More breathing room */
+  margin-top: 1.5rem;
+  max-width: 1400px;  /* Wide desktop support */
+  padding: 0 1rem;
 }
 
 .wish-card {
@@ -466,14 +468,30 @@ p {
   to { filter: drop-shadow(0 0 25px rgba(255,107,107,0.8)); }
 }
 
+/* Smooth horizontal scroll for many videos */
 .wishes-wrapper {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  max-width: 100%;
+  overflow-x: auto;  /* Horizontal scroll if needed */
+  padding-bottom: 1rem;
+  scrollbar-width: thin;  /* Firefox */
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .hero-section { height: 50vh; }
   .hero-title { font-size: 2.5rem !important; }
+}
+
+.wishes-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.wishes-wrapper::-webkit-scrollbar-track {
+  background: rgba(15,23,42,0.3);
+  border-radius: 3px;
+}
+
+.wishes-wrapper::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+  border-radius: 3px;
 }
