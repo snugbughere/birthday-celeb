@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>When The Clock Strikes Magic</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Countdown Screen -->
+      <section id="countdown-screen" class="screen hidden">
+        <div class="overlay">
+          <h1 id="before-title"></h1>
+          <p id="witty-text"></p>
+          <div id="countdown-timer">
+            <div class="time-box">
+              <span id="days">00</span>
+              <span class="label">Days</span>
+            </div>
+            <div class="time-box">
+              <span id="hours">00</span>
+              <span class="label">Hours</span>
+            </div>
+            <div class="time-box">
+              <span id="minutes">00</span>
+              <span class="label">Minutes</span>
+            </div>
+            <div class="time-box">
+              <span id="seconds">00</span>
+              <span class="label">Seconds</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Birthday Screen -->
+      <section id="birthday-screen" class="screen hidden">
+        <div id="balloonsContainer" class="balloons-container"></div>
+        <div class="overlay">
+          <h1 id="birthday-title"></h1>
+          <p id="birthday-message">
+            You are the brightest part of my world. Today is all about you. 💖
+          </p>
+
+          <button id="play-music-btn">Play Birthday Music 🎵</button>
+          <audio id="birthday-audio" loop></audio>
+
+          <h2>Video wishes from your friends</h2>
+          <div id="wishes-container" class="wishes-grid"></div>
+        </div>
+      </section>
+
+      <!-- Video Modal -->
+      <div id="video-modal" class="modal hidden">
+        <div class="modal-content">
+          <span id="modal-close">&times;</span>
+          <video id="modal-video" controls></video>
+          <div id="modal-caption"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
