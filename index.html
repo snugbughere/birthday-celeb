@@ -43,9 +43,6 @@
             You are the brightest part of my world. Today is all about you. 💖
           </p>
 
-          <button id="play-music-btn">Play Birthday Music 🎵</button>
-          <audio id="birthday-audio" loop></audio>
-
           <h2>Video wishes from your friends</h2>
           <div id="wishes-container" class="wishes-grid"></div>
         </div>
@@ -60,6 +57,12 @@
         </div>
       </div>
     </div>
+    <button id="unmuteBtn" onclick="unmuteMusic()" 
+        style="position:fixed; top:20px; right:20px; z-index:1000; 
+              padding:12px 20px; background:#ff6b6b; color:white; border:none; 
+              border-radius:25px; cursor:pointer; font-weight:bold;">
+        🎵 Music
+    </button>
 
     <script src="config.js"></script>
     <script src="script.js"></script>

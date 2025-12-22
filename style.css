@@ -321,3 +321,69 @@ p {
     opacity: 0;
   }
 }
+
+.wish-thumb {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.video-thumb:hover {
+  transform: scale(1.05);
+}
+
+.video-thumb {
+  background: #000;  /* Black poster while loading */
+}
+
+.wish-card {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.wish-card.locked {
+  filter: blur(2px) grayscale(50%);
+  cursor: not-allowed;
+}
+
+.wish-card.active {
+  border: 3px solid #ff6b6b;
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+}
+
+.wish-card.unlocked {
+  border-color: #4ecdc4;
+}
+
+.lock-overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.blink-indicator {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff6b6b;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  animation: blink 1.5s infinite;
+  animation-play-state: paused;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; transform: scale(1); }
+  51%, 100% { opacity: 0.3; transform: scale(1.1); }
+}

@@ -1,6 +1,9 @@
 // Global audio state
 let backgroundAudio = null;
 let isBirthdayMode = false;
+let hasUserInteracted = false;
+let currentWishIndex = 0;  // Tracks which video is unlocked
+let totalWishes = 0;
 
 // 1. Autoplay ambient music on load
 function initBackgroundMusic() {
@@ -13,18 +16,31 @@ function initBackgroundMusic() {
 
 // 3. Birthday mode switch (music + balloons)
 function switchToBirthdayMode() {
-  if (backgroundAudio) {
-    backgroundAudio.pause();
-    backgroundAudio = new Audio('assets/music/birthday-song.mp3');
-    backgroundAudio.loop = true;
-    backgroundAudio.volume = 0.5;
-    backgroundAudio.muted = true;  // Start muted
-    backgroundAudio.play().catch(e => console.log('Birthday music started muted'));
+  if (backgroundAudio) backgroundAudio.pause();
+  backgroundAudio = new Audio(CONFIG.musicUrl);  // Uses your config.js music
+  backgroundAudio.loop = true;
+  backgroundAudio.volume = 0.5;
+  backgroundAudio.muted = true;
+
+  // Resume if user interacted, otherwise wait
+  if (hasUserInteracted) {
+    backgroundAudio.muted = false;  // Full volume after interaction
   }
+
+  backgroundAudio.play().then(() => {
+    console.log('✅ Birthday music started');
+    const unmuteBtn = document.getElementById('unmuteBtn');
+    if (unmuteBtn) unmuteBtn.style.display = 'block';
+  }).catch(e => {
+    console.log('🎵 Music ready - tap anywhere to unmute');
+    // Hide error - unmute button handles it
+  });
+  
   isBirthdayMode = true;
-  document.getElementById('countdownScreen').style.display = 'none';
-  document.getElementById('birthdayScreen').style.display = 'block';
+  document.getElementById('countdown-screen').style.display = 'none';
+  document.getElementById('birthday-screen').style.display = 'block';
   createBalloons();
+  triggerBirthdayEffects();
 }
 
 function getRemainingTime(target) {
@@ -80,8 +96,7 @@ function renderCountdown(targetDate) {
 
     if (t.total <= 0) {
       clearInterval(intervalId);
-      showScreen("birthday-screen");
-      triggerBirthdayEffects();
+      switchToBirthdayMode();
       return;
     }
 
@@ -98,16 +113,32 @@ function renderCountdown(targetDate) {
 function renderWishes() {
   const container = document.getElementById("wishes-container");
   container.innerHTML = "";
+  totalWishes = CONFIG.wishes.length;
 
   CONFIG.wishes.forEach((wish, index) => {
     const card = document.createElement("div");
     card.className = "wish-card";
     card.dataset.index = index;
 
-    const img = document.createElement("img");
-    img.className = "wish-thumb";
-    img.src = wish.thumbnail;
-    img.alt = wish.name;
+    // Video thumbnail
+    const videoThumb = document.createElement("video");
+    videoThumb.className = "wish-thumb video-thumb";
+    videoThumb.src = wish.videoUrl;
+    videoThumb.muted = true;
+    videoThumb.loop = true;
+    videoThumb.preload = "metadata";
+    videoThumb.playsInline = true;
+    videoThumb.dataset.index = index;
+
+    // Lock overlay for locked videos
+    const lockOverlay = document.createElement("div");
+    lockOverlay.className = "lock-overlay";
+    lockOverlay.innerHTML = index === 0 ? "👆 Tap to Start" : "🔒 Locked";
+
+    // Blink effect for current video
+    const blinkIndicator = document.createElement("div");
+    blinkIndicator.className = "blink-indicator";
+    blinkIndicator.textContent = "▶️";
 
     const name = document.createElement("div");
     name.className = "wish-name";
@@ -117,11 +148,19 @@ function renderWishes() {
     msg.className = "wish-message";
     msg.textContent = wish.message;
 
-    card.appendChild(img);
+    card.appendChild(videoThumb);
+    card.appendChild(lockOverlay);
+    card.appendChild(blinkIndicator);
     card.appendChild(name);
     card.appendChild(msg);
     container.appendChild(card);
+
+    // Initial state
+    updateWishState(index);
   });
+
+  // Auto-blink first video
+  blinkCurrentWish();
 }
 
 function setupModal() {
@@ -132,19 +171,23 @@ function setupModal() {
   const container = document.getElementById("wishes-container");
 
   container.addEventListener("click", (e) => {
-    const card = e.target.closest(".wish-card");
-    if (!card) return;
+  const card = e.target.closest(".wish-card");
+  if (!card || !card.classList.contains('active')) return;  // Only active card clickable
 
-    const index = card.dataset.index;
-    const wish = CONFIG.wishes[index];
+  const index = card.dataset.index;
+  const wish = CONFIG.wishes[index];
 
-    modalVideo.src = wish.videoUrl;
-    modalVideo.currentTime = 0;
-    modalVideo.play().catch(() => {});
+  // Open modal...
+  modalVideo.src = wish.videoUrl;
+  modalVideo.play();
 
-    modalCaption.textContent = `${wish.name} — ${wish.message}`;
-    modal.classList.remove("hidden");
-  });
+  // Listen for video end → unlock next
+  const onVideoEnd = () => {
+    modalVideo.removeEventListener('ended', onVideoEnd);
+    unlockNextWish();
+  };
+  modalVideo.addEventListener('ended', onVideoEnd);
+});
 
   function closeModal() {
     modal.classList.add("hidden");
@@ -273,6 +316,75 @@ function playVideoWish(videoSrc) {
   };
 }
 
+function unmuteMusic() {
+  backgroundAudio = isBirthdayMode ? new Audio(CONFIG.musicUrl) : new Audio(CONFIG.welcomeUrl);  // Uses your config.js music
+  backgroundAudio.loop = true;
+  backgroundAudio.volume = 0.5;
+  if (backgroundAudio) {
+    backgroundAudio.muted = false;
+    if (!backgroundAudio.muted) {
+      document.getElementById('unmuteBtn').style.display = 'none';
+      backgroundAudio.play().then(() => {
+        console.log('✅ Birthday music started');
+        const unmuteBtn = document.getElementById('unmuteBtn');
+        if (unmuteBtn) unmuteBtn.style.display = 'block';
+      }).catch(e => {
+        console.log('🎵 Music ready - tap anywhere to unmute');
+        // Hide error - unmute button handles it
+      });
+    }
+  }
+}
+
+
+function updateWishState(index) {
+  const card = document.querySelector(`[data-index="${index}"]`);
+  const videoThumb = card.querySelector('.wish-thumb');
+  const lockOverlay = card.querySelector('.lock-overlay');
+  const blinkIndicator = card.querySelector('.blink-indicator');
+
+  if (index < currentWishIndex) {
+    // Unlocked (watched)
+    card.classList.add('unlocked');
+    lockOverlay.style.display = 'none';
+    blinkIndicator.style.display = 'none';
+    videoThumb.play().catch(() => {});
+  } else if (index === currentWishIndex) {
+    // Current (blinking)
+    card.classList.add('active');
+    lockOverlay.style.display = index === 0 ? 'block' : 'none';
+    blinkIndicator.style.display = 'block';
+    videoThumb.play().catch(() => {});
+  } else {
+    // Locked (future)
+    card.classList.remove('active', 'unlocked');
+    lockOverlay.style.display = 'block';
+    blinkIndicator.style.display = 'none';
+    videoThumb.pause();
+    videoThumb.currentTime = 0;
+    card.classList.add('locked');
+  }
+}
+
+function blinkCurrentWish() {
+  const currentCard = document.querySelector('.wish-card.active .blink-indicator');
+  if (currentCard) {
+    currentCard.style.animationPlayState = 'running';
+  }
+}
+
+function unlockNextWish() {
+  currentWishIndex++;
+  if (currentWishIndex < totalWishes) {
+    // Update all cards
+    document.querySelectorAll('.wish-card').forEach((card, index) => {
+      updateWishState(index);
+    });
+    blinkCurrentWish();
+  }
+}
+
+
 
 function init() {
   document.title = CONFIG.pageTitle;
@@ -280,13 +392,10 @@ function init() {
   document.getElementById("witty-text").textContent = CONFIG.wittyBeforeText;
   document.getElementById("birthday-title").textContent = CONFIG.pageTitle;
 
-  const audio = document.getElementById("birthday-audio");
-  audio.src = CONFIG.musicUrl;
 
   createFloatingDecor();
   renderWishes();
   setupModal();
-  setupMusic();
 
   const target = new Date(CONFIG.targetDate).getTime();
   const now = new Date().getTime();
@@ -294,12 +403,16 @@ function init() {
   if (now < target) {
     showScreen("countdown-screen");
     renderCountdown(CONFIG.targetDate);
+    initBackgroundMusic();
   } else {
     showScreen("birthday-screen");
-    triggerBirthdayEffects();
+    switchToBirthdayMode();
   }
-  initBackgroundMusic();
 }
+
+
+document.addEventListener('click', () => hasUserInteracted = true, {once: true});
+document.addEventListener('keydown', () => hasUserInteracted = true, {once: true});
 
 // Init on page load
 document.addEventListener('DOMContentLoaded', () => {

@@ -8,18 +8,17 @@ const CONFIG = {
   wittyBeforeText:
     "⏰ A countdown to something extraordinary... ❤️",
   musicUrl: "assets/happyBirthdayToYou.mp3",
+  welcomeUrl: "assets/welcome_music.mp3",
   wishes: [
     {
       name: "Friend 1",
       message: "Happy birthday, Surabhi! 🎉",
-      videoUrl: "assets/videos/friend1.mp4",
-      thumbnail: "assets/thumbs/friend1.jpg"
+      videoUrl: "assets/videos/Dhriti.mp4"
     },
     {
       name: "Friend 2",
       message: "Wishing you a year full of joy and love ❤️",
-      videoUrl: "assets/videos/friend2.mp4",
-      thumbnail: "assets/thumbs/friend2.jpg"
+      videoUrl: "assets/videos/Priti.mp4"
     }
     // Add more wishes as needed
   ]
