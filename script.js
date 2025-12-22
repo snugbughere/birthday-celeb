@@ -17,31 +17,32 @@ function initBackgroundMusic() {
 // 3. Birthday mode switch (music + balloons)
 function switchToBirthdayMode() {
   if (backgroundAudio) backgroundAudio.pause();
-  backgroundAudio = new Audio(CONFIG.musicUrl);  // Uses your config.js music
+  backgroundAudio = new Audio(CONFIG.musicUrl);
   backgroundAudio.loop = true;
   backgroundAudio.volume = 0.5;
   backgroundAudio.muted = true;
 
-  // Resume if user interacted, otherwise wait
   if (hasUserInteracted) {
-    backgroundAudio.muted = false;  // Full volume after interaction
+    backgroundAudio.muted = false;
   }
 
   backgroundAudio.play().then(() => {
     console.log('✅ Birthday music started');
-    const unmuteBtn = document.getElementById('unmuteBtn');
-    if (unmuteBtn) unmuteBtn.style.display = 'block';
-  }).catch(e => {
-    console.log('🎵 Music ready - tap anywhere to unmute');
-    // Hide error - unmute button handles it
-  });
-  
+    document.getElementById('unmuteBtn').style.display = 'block';
+  }).catch(e => console.log('🎵 Music ready - tap to unmute'));
+
   isBirthdayMode = true;
   document.getElementById('countdown-screen').style.display = 'none';
-  document.getElementById('birthday-screen').style.display = 'block';
+  document.getElementById('birthday-screen').style.display = 'flex';
+  
+  // ✅ NEW: Auto-play hero video
+  const heroVideo = document.getElementById('hero-video');
+  heroVideo.play().catch(() => {});
+  
   createBalloons();
   triggerBirthdayEffects();
 }
+
 
 function getRemainingTime(target) {
   const now = new Date().getTime();
@@ -359,27 +360,30 @@ function updateWishState(index) {
   const blinkIndicator = card.querySelector('.blink-indicator');
 
   if (index < currentWishIndex) {
-    // Unlocked (watched)
+    // Unlocked (watched) ✅
     card.classList.add('unlocked');
+    card.classList.remove('locked', 'active');  // ✅ Remove locked/active
     lockOverlay.style.display = 'none';
     blinkIndicator.style.display = 'none';
     videoThumb.play().catch(() => {});
   } else if (index === currentWishIndex) {
-    // Current (blinking)
+    // Current (blinking) ✅
     card.classList.add('active');
+    card.classList.remove('locked', 'unlocked');  // ✅ Remove others
     lockOverlay.style.display = index === 0 ? 'block' : 'none';
     blinkIndicator.style.display = 'block';
     videoThumb.play().catch(() => {});
   } else {
-    // Locked (future)
+    // Locked (future) ✅
     card.classList.remove('active', 'unlocked');
+    card.classList.add('locked');  // ✅ Only add locked
     lockOverlay.style.display = 'block';
     blinkIndicator.style.display = 'none';
     videoThumb.pause();
     videoThumb.currentTime = 0;
-    card.classList.add('locked');
   }
 }
+
 
 function blinkCurrentWish() {
   const currentCard = document.querySelector('.wish-card.active .blink-indicator');

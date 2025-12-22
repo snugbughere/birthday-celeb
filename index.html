@@ -35,18 +35,29 @@
       </section>
 
       <!-- Birthday Screen -->
-      <section id="birthday-screen" class="screen hidden">
-        <div id="balloonsContainer" class="balloons-container"></div>
-        <div class="overlay">
-          <h1 id="birthday-title"></h1>
-          <p id="birthday-message">
-            You are the brightest part of my world. Today is all about you. 💖
-          </p>
+<section id="birthday-screen" class="screen hidden">
+  <div id="balloonsContainer" class="balloons-container"></div>
+  
+  <!-- ✅ NEW: Personalized Hero Section -->
+  <div id="hero-section" class="hero-section">
+    <video id="hero-video" class="hero-video" muted loop playsinline preload="auto">
+      <!-- Add your special montage here -->
+      <source src="assets/videos/Dhriti.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay">
+      <h1 id="birthday-title" class="hero-title"></h1>
+      <p id="birthday-message" class="hero-message">
+        You are the brightest part of my world. Today is all about you. 💖
+      </p>
+    </div>
+  </div>
 
-          <h2>Video wishes from your friends</h2>
-          <div id="wishes-container" class="wishes-grid"></div>
-        </div>
-      </section>
+  <!-- Wishes stay below -->
+  <div class="wishes-wrapper">
+    <h2>Video wishes from your friends</h2>
+    <div id="wishes-container" class="wishes-grid"></div>
+  </div>
+</section>
 
       <!-- Video Modal -->
       <div id="video-modal" class="modal hidden">
