@@ -49,13 +49,13 @@ Just open `index.html` in a browser (VS Code Live Server recommended).
 3. In GitHub repo settings, enable GitHub Pages:
    - Settings → Pages → Source: `main` branch, `/root` folder.
 4. After a few minutes, visit:
-   - `https://<your-username>.github.io/surabhi-birthday/`.
+   - `https://<your-username>.github.io/birthday-celeb/`.
 
 ## Git commands
 git init
 git add .git commit -m “Initial birthday app”
 git branch -M main
-git remote add origin https://github.com//surabhi-birthday.git
+git remote add origin https://github.com//birthday-celeb.git
 git push -u origin main
 
 To update :-
