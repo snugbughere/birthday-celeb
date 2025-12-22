@@ -170,29 +170,44 @@ function setupModal() {
   const closeBtn = document.getElementById("modal-close");
   const container = document.getElementById("wishes-container");
 
+  // Click handler for wish cards
   container.addEventListener("click", (e) => {
-  const card = e.target.closest(".wish-card");
-  if (!card || !card.classList.contains('active')) return;  // Only active card clickable
+    const card = e.target.closest(".wish-card");
+    if (!card || !card.classList.contains('active')) return;
 
-  const index = card.dataset.index;
-  const wish = CONFIG.wishes[index];
+    const index = parseInt(card.dataset.index);
+    const wish = CONFIG.wishes[index];
+    const videoThumb = card.querySelector('.wish-thumb');
 
-  // Open modal...
-  modalVideo.src = wish.videoUrl;
-  modalVideo.play();
+    // ✅ CRITICAL FIX: Pause ALL thumbnail videos immediately
+    document.querySelectorAll('.wish-thumb').forEach(thumb => {
+      thumb.pause();
+      thumb.currentTime = 0;
+    });
 
-  // Listen for video end → unlock next
-  const onVideoEnd = () => {
-    modalVideo.removeEventListener('ended', onVideoEnd);
-    unlockNextWish();
-  };
-  modalVideo.addEventListener('ended', onVideoEnd);
-});
+    // Set modal content
+    modalCaption.textContent = `${wish.name}: ${wish.message}`;
+    modalVideo.src = wish.videoUrl;
+    modalVideo.currentTime = 0;  // ✅ RESET to beginning
+    modal.classList.remove("hidden");
+    
+    // Play modal video
+    modalVideo.play().catch(() => {});
+
+    // Listen for video end → unlock next
+    const onVideoEnd = () => {
+      modalVideo.removeEventListener('ended', onVideoEnd);
+      unlockNextWish();
+      closeModal();
+    };
+    modalVideo.addEventListener('ended', onVideoEnd);
+  });
 
   function closeModal() {
     modal.classList.add("hidden");
     modalVideo.pause();
-    modalVideo.src = "";
+    modalVideo.currentTime = 0;
+    modalVideo.src = "";  // ✅ Clear src to fully stop
   }
 
   closeBtn.addEventListener("click", closeModal);

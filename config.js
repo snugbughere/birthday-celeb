@@ -11,12 +11,12 @@ const CONFIG = {
   welcomeUrl: "assets/welcome_music.mp3",
   wishes: [
     {
-      name: "Friend 1",
-      message: "Happy birthday, Surabhi! 🎉",
+      name: "Dhritiiii",
+      message: "👧🏻🎉",
       videoUrl: "assets/videos/Dhriti.mp4"
     },
     {
-      name: "Friend 2",
+      name: "Pritiiii",
       message: "Wishing you a year full of joy and love ❤️",
       videoUrl: "assets/videos/Priti.mp4"
     }
