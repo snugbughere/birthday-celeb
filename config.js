@@ -19,7 +19,31 @@ const CONFIG = {
       name: "Pritiiii",
       message: "Wishing you a year full of joy and love ❤️",
       videoUrl: "assets/videos/Priti.mp4"
+    },
+    {
+      name: "Pragati",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Pragati.mp4"
+    },
+    {
+      name: "Prakashini",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Prakashini.mp4"
+    },
+    {
+      name: "Neha",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Neha.mp4"
+    },
+    {
+      name: "Ekta",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Ekta.mp4"
+    },
+    {
+      name: "Dost",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Friend1.mp4"
     }
-    // Add more wishes as needed
   ]
 };
