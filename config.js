@@ -11,39 +11,39 @@ const CONFIG = {
   welcomeUrl: "assets/welcome_music.mp3",
   wishes: [
     {
-      name: "Dhritiiii",
-      message: "👧🏻🎉",
+      name: "",
+      message: "👧🏻❤️❤️❤️❤️🎉",
       videoUrl: "assets/videos/Dhriti.mp4"
     },
     {
-      name: "Pritiiii",
-      message: "Wishing you a year full of joy and love ❤️",
-      videoUrl: "assets/videos/Priti.mp4"
-    },
-    {
-      name: "Pragati",
-      message: "❤️❤️❤️❤️",
-      videoUrl: "assets/videos/Pragati.mp4"
-    },
-    {
-      name: "Prakashini",
+      name: "",
       message: "❤️❤️❤️❤️",
       videoUrl: "assets/videos/Prakashini.mp4"
     },
     {
-      name: "Neha",
+      name: "",
       message: "❤️❤️❤️❤️",
       videoUrl: "assets/videos/Neha.mp4"
     },
     {
-      name: "Ekta",
+      name: "",
       message: "❤️❤️❤️❤️",
       videoUrl: "assets/videos/Ekta.mp4"
     },
     {
-      name: "Dost",
+      name: "",
       message: "❤️❤️❤️❤️",
       videoUrl: "assets/videos/Friend1.mp4"
+    },
+    {
+      name: "",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Priti.mp4"
+    },
+    {
+      name: "",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Pragati.mp4"
     }
   ]
 };
