@@ -16,32 +16,61 @@ function initBackgroundMusic() {
 
 // 3. Birthday mode switch (music + balloons)
 function switchToBirthdayMode() {
+  // Pause countdown music
   if (backgroundAudio) backgroundAudio.pause();
-  backgroundAudio = new Audio(CONFIG.musicUrl);
-  backgroundAudio.loop = true;
-  backgroundAudio.volume = 0.5;
-  backgroundAudio.muted = true;
-
-  if (hasUserInteracted) {
-    backgroundAudio.muted = false;
-  }
-
-  backgroundAudio.play().then(() => {
-    console.log('✅ Birthday music started');
-    document.getElementById('unmuteBtn').style.display = 'block';
-  }).catch(e => console.log('🎵 Music ready - tap to unmute'));
-
-  isBirthdayMode = true;
-  document.getElementById('countdown-screen').style.display = 'none';
-  document.getElementById('birthday-screen').style.display = 'flex';
   
-  // ✅ NEW: Auto-play hero video
-  const heroVideo = document.getElementById('hero-video');
-  heroVideo.play().catch(() => {});
-  
-  createBalloons();
-  triggerBirthdayEffects();
+  // 1. Show celebration overlay FIRST
+  const celebrationOverlay = document.createElement('div');
+  celebrationOverlay.id = 'celebration-overlay';
+  celebrationOverlay.innerHTML = `
+    <div class="celebration-content">
+      <div class="fireworks">🎉</div>
+      <h2>Happy Birthday SHEFALI aka SURABHI!!</h2>
+      <p>🎈 The magic moment has arrived! 🎈</p>
+    </div>
+  `;
+  celebrationOverlay.className = 'celebration-overlay';
+  document.body.appendChild(celebrationOverlay);
+
+  // 2. Play celebration animation (2 seconds)
+  setTimeout(() => {
+    // Switch music
+    backgroundAudio = new Audio(CONFIG.musicUrl);
+    backgroundAudio.loop = true;
+    backgroundAudio.volume = 0.5;
+    backgroundAudio.muted = true;
+    
+    if (hasUserInteracted) {
+      backgroundAudio.muted = false;
+    }
+    
+    backgroundAudio.play().then(() => {
+      console.log('✅ Birthday music started');
+      document.getElementById('unmuteBtn').style.display = 'block';
+    }).catch(e => console.log('🎵 Music ready - tap to unmute'));
+
+    // 3. Hide celebration, show birthday screen
+    celebrationOverlay.style.opacity = '0';
+    celebrationOverlay.style.transform = 'scale(1.2)';
+    
+    setTimeout(() => {
+      document.body.removeChild(celebrationOverlay);
+      
+      // Show birthday content
+      isBirthdayMode = true;
+      document.getElementById('countdown-screen').style.display = 'none';
+      document.getElementById('birthday-screen').style.display = 'flex';
+      
+      // Auto-play hero video
+      const heroVideo = document.getElementById('hero-video');
+      heroVideo.play().catch(() => {});
+      
+      createBalloons();
+      triggerBirthdayEffects();
+    }, 2000);
+  }, 5000);
 }
+
 
 
 function getRemainingTime(target) {
@@ -198,6 +227,10 @@ function setupModal() {
     // Play modal video
     modalVideo.play().catch(() => {});
 
+    if (backgroundAudio && !backgroundAudio.paused) {
+      backgroundAudio.pause(); // Stop music during video
+    }
+
     // Listen for video end → unlock next
     const onVideoEnd = () => {
       modalVideo.removeEventListener("ended", onVideoEnd);
@@ -212,6 +245,12 @@ function setupModal() {
     modalVideo.pause();
     modalVideo.currentTime = 0;
     modalVideo.src = ""; // Clear src to fully stop
+
+    // Restart background music if in birthday mode
+    if (isBirthdayMode && backgroundAudio) {
+      backgroundAudio.currentTime = 0;
+      backgroundAudio.play().catch(() => {});
+    }
   }
 
   closeBtn.addEventListener("click", closeModal);

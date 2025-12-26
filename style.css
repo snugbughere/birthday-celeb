@@ -461,6 +461,7 @@ p {
   font-size: 1.3rem !important;
   max-width: 600px;
   opacity: 0.95;
+  color: plum;
 }
 
 @keyframes glow {
@@ -495,3 +496,72 @@ p {
   background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
   border-radius: 3px;
 }
+
+.celebration-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d96ff);
+  background-size: 400% 400%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transform: scale(1);
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: celebrationBg 3s ease-in-out infinite;
+}
+
+.celebration-content {
+  text-align: center;
+  color: white;
+  transform: scale(0);
+  animation: celebrationPop 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+.celebration-content h2 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.8);
+  animation: bounce 1s infinite;
+  color: plum;
+}
+
+.celebration-content p {
+  font-size: 1.5rem;
+  margin: 20px 0;
+  color: #4ecdc4;
+}
+
+.fireworks {
+  font-size: 4rem;
+  animation: fireworks 5s infinite;
+}
+
+@keyframes celebrationBg {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes celebrationPop {
+  0% { transform: scale(0) rotate(180deg); }
+  50% { transform: scale(1.2) rotate(0deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+@keyframes fireworks {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.2) rotate(90deg); }
+  50% { transform: scale(1.5) rotate(180deg); }
+  75% { transform: scale(1.2) rotate(270deg); }
+}
+
