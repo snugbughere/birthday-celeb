@@ -1,7 +1,6 @@
 // config.js
 const CONFIG = {
   targetDate: "2025-12-28T00:00:00+05:30", // change for future birthdays
-//  targetDate: "2025-12-23T08:20:00+05:30",
   wifeName: "Surabhi",
   pageTitle: "When The Clock Strikes Magic...",
   beforeTitle: "Something magical is coming ✨",
@@ -44,6 +43,11 @@ const CONFIG = {
       name: "",
       message: "❤️❤️❤️❤️",
       videoUrl: "assets/videos/Pragati.mp4"
+    },
+    {
+      name: "",
+      message: "❤️❤️❤️❤️",
+      videoUrl: "assets/videos/Sahil.mp4"
     }
   ]
 };
